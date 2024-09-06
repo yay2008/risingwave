@@ -15,7 +15,6 @@
 use anyhow::{anyhow, Result};
 use futures::{pin_mut, StreamExt};
 use risingwave_common::bitmap::Bitmap;
-use risingwave_common::hash::VirtualNode;
 use risingwave_frontend::TableCatalog;
 use risingwave_hummock_sdk::HummockReadEpoch;
 use risingwave_rpc_client::MetaClient;
@@ -54,6 +53,7 @@ pub fn print_table_catalog(table: &TableCatalog) {
     println!("{:#?}", table);
 }
 
+// TODO: shall we work on `TableDesc` instead?
 pub async fn make_state_table<S: StateStore>(hummock: S, table: &TableCatalog) -> StateTable<S> {
     StateTable::new_with_distribution(
         hummock,
@@ -65,13 +65,13 @@ pub async fn make_state_table<S: StateStore>(hummock: S, table: &TableCatalog) -
             .collect(),
         table.pk().iter().map(|x| x.order_type).collect(),
         table.pk().iter().map(|x| x.column_index).collect(),
-        // TODO(var-vnode): use vnode count from table desc
-        TableDistribution::all(table.distribution_key().to_vec(), VirtualNode::COUNT), // scan all vnodes
+        TableDistribution::all(table.distribution_key().to_vec(), table.vnode_count()), // scan all vnodes
         Some(table.value_indices.clone()),
     )
     .await
 }
 
+// TODO: shall we work on `TableDesc` instead?
 pub fn make_storage_table<S: StateStore>(
     hummock: S,
     table: &TableCatalog,
@@ -84,8 +84,7 @@ pub fn make_storage_table<S: StateStore>(
     Ok(StorageTable::new_partial(
         hummock,
         output_columns_ids,
-        // TODO(var-vnode): use vnode count from table desc
-        Some(Bitmap::ones(VirtualNode::COUNT).into()),
+        Some(Bitmap::ones(table.vnode_count()).into()),
         &table.table_desc().try_to_protobuf()?,
     ))
 }
