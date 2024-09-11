@@ -520,14 +520,13 @@ async fn start_replay(
 }
 
 async fn pin_old_snapshots(
-    meta_client: &MetaClient,
+    _meta_client: &MetaClient,
     replayed_epochs: &[HummockEpoch],
     num: usize,
 ) -> Vec<HummockEpoch> {
     let mut old_epochs = vec![];
     for &epoch in replayed_epochs.iter().rev().take(num) {
         old_epochs.push(epoch);
-        let _ = meta_client.pin_specific_snapshot(epoch).await;
     }
     old_epochs
 }

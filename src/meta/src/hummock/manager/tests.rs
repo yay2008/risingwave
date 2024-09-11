@@ -92,21 +92,9 @@ fn get_compaction_group_object_ids(
         .collect_vec()
 }
 
-async fn list_pinned_snapshot_from_meta_store(env: &MetaSrvEnv) -> Vec<HummockPinnedSnapshot> {
-    match env.meta_store_ref() {
-        MetaStoreImpl::Kv(meta_store) => HummockPinnedSnapshot::list(meta_store).await.unwrap(),
-        MetaStoreImpl::Sql(sql_meta_store) => {
-            use risingwave_meta_model_v2::hummock_pinned_snapshot;
-            use sea_orm::EntityTrait;
-            hummock_pinned_snapshot::Entity::find()
-                .all(&sql_meta_store.conn)
-                .await
-                .unwrap()
-                .into_iter()
-                .map(Into::into)
-                .collect()
-        }
-    }
+async fn list_pinned_snapshot_from_meta_store(_env: &MetaSrvEnv) -> Vec<HummockPinnedSnapshot> {
+    // TODO #18214: remove this method
+    vec![]
 }
 
 async fn list_pinned_version_from_meta_store(env: &MetaSrvEnv) -> Vec<HummockPinnedVersion> {

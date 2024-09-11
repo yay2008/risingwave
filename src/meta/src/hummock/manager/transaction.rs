@@ -201,7 +201,7 @@ impl<'a> HummockVersionTransaction<'a> {
                         *table_id,
                         StateTableInfoDelta {
                             committed_epoch,
-                            safe_epoch: info.safe_epoch,
+                            safe_epoch: 0,
                             compaction_group_id: info.compaction_group_id,
                         }
                     )
