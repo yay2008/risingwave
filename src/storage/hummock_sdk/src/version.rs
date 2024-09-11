@@ -143,14 +143,6 @@ impl HummockVersionStateTableInfo {
             match self.state_table_info.entry(*table_id) {
                 Entry::Occupied(mut entry) => {
                     let prev_info = entry.get_mut();
-                    assert!(
-                        new_info.safe_epoch >= prev_info.safe_epoch
-                            && new_info.committed_epoch >= prev_info.committed_epoch,
-                        "state table info regress. table id: {}, prev_info: {:?}, new_info: {:?}",
-                        table_id.table_id,
-                        prev_info,
-                        new_info
-                    );
                     if new_info.committed_epoch > prev_info.committed_epoch {
                         has_bumped_committed_epoch = true;
                     }
@@ -393,14 +385,6 @@ impl HummockVersion {
         }
     }
 
-    pub(crate) fn set_safe_epoch(&mut self, safe_epoch: u64) {
-        self.safe_epoch = safe_epoch;
-    }
-
-    pub fn visible_table_safe_epoch(&self) -> u64 {
-        self.safe_epoch
-    }
-
     pub(crate) fn set_max_committed_epoch(&mut self, max_committed_epoch: u64) {
         self.max_committed_epoch = max_committed_epoch;
     }
@@ -573,14 +557,6 @@ impl HummockVersionDelta {
                 let new_log = delta.new_log.as_ref().unwrap();
                 new_log.new_value.iter().chain(new_log.old_value.iter())
             }))
-    }
-
-    pub fn visible_table_safe_epoch(&self) -> u64 {
-        self.safe_epoch
-    }
-
-    pub fn set_safe_epoch(&mut self, safe_epoch: u64) {
-        self.safe_epoch = safe_epoch;
     }
 
     pub fn visible_table_committed_epoch(&self) -> u64 {

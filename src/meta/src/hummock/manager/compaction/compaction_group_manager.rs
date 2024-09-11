@@ -547,7 +547,7 @@ impl HummockManager {
                         table_id,
                         PbStateTableInfoDelta {
                             committed_epoch: info.committed_epoch,
-                            safe_epoch: info.safe_epoch,
+                            safe_epoch: 0,
                             compaction_group_id: new_compaction_group_id,
                         }
                     )

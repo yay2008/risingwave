@@ -213,7 +213,7 @@ impl From<(&HummockVersion, &HashSet<CompactionGroupId>)> for IncompleteHummockV
                 })
                 .collect(),
             max_committed_epoch: version.visible_table_committed_epoch(),
-            safe_epoch: version.visible_table_safe_epoch(),
+            safe_epoch: 0,
             table_watermarks: version.table_watermarks.clone(),
             // TODO: optimization: strip table change log
             table_change_log: version
@@ -296,7 +296,7 @@ impl From<(&HummockVersionDelta, &HashSet<CompactionGroupId>)> for IncompleteHum
                 })
                 .collect(),
             max_committed_epoch: delta.visible_table_committed_epoch(),
-            safe_epoch: delta.visible_table_safe_epoch(),
+            safe_epoch: 0,
             trivial_move: delta.trivial_move,
             new_table_watermarks: delta.new_table_watermarks.clone(),
             removed_table_ids: delta.removed_table_ids.clone(),

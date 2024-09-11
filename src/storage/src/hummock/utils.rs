@@ -73,20 +73,11 @@ where
 }
 
 pub fn validate_safe_epoch(
-    version: &HummockVersion,
-    table_id: TableId,
-    epoch: u64,
+    _version: &HummockVersion,
+    _table_id: TableId,
+    _epoch: u64,
 ) -> HummockResult<()> {
-    if let Some(info) = version.state_table_info.info().get(&table_id)
-        && epoch < info.safe_epoch
-    {
-        return Err(HummockError::expired_epoch(
-            table_id,
-            info.safe_epoch,
-            epoch,
-        ));
-    }
-
+    // TODO #18477: remote this method
     Ok(())
 }
 

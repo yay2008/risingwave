@@ -364,8 +364,8 @@ message CompactTask {
   // In ideal case, the compaction will generate splits.len() tables which have key range
   // corresponding to that in [splits], respectively
   repeated KeyRange splits = 2;
-  // low watermark in 'ts-aware compaction'
-  uint64 watermark = 3;
+  reserved 3;
+  reserved 'watermark';
   // compaction output, which will be added to [target_level] of LSM after compaction
   repeated SstableInfo sorted_output_ssts = 4;
   // task id assigned by hummock storage service
